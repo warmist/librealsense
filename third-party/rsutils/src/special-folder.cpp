@@ -78,7 +78,9 @@ std::string get_special_folder( special_folder f )
         CHECK_HR_STR( "SHGetKnownFolderPath", hr );  // throws runtime_error
         char str[1024];
         size_t len;
-        auto error = wcstombs_s( &len, str, path, 1023 );
+        _locale_t locale=_create_locale(LC_ALL,"");
+        auto error = _wcstombs_s_l( &len, str, path, 1023,locale );
+        _free_locale(locale);
         CoTaskMemFree( path );
         if( error )
             throw std::runtime_error( "failed to convert special folder: errno=" + std::to_string( error ) );
